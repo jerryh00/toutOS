@@ -96,14 +96,6 @@ static void handle_magic_keys(char c)
 	}
 }
 
-static inline void cursor_backward(uint8_t count)
-{
-	write_char_uart(0x1B);
-	write_char_uart(0x5B);
-	write_char_uart(count);
-	write_char_uart('D');
-}
-
 static void to_line_discipline(char c)
 {
 	unsigned long flags;
@@ -113,9 +105,9 @@ static void to_line_discipline(char c)
 		if (uib_index > 0) {
 			uib_index--;
 
-			cursor_backward(1);
+			write_char_uart('\b');
 			write_char_uart(' ');
-			cursor_backward(1);
+			write_char_uart('\b');
 		}
 
 		spin_unlock_irqrestore(&uib_lock, flags);
